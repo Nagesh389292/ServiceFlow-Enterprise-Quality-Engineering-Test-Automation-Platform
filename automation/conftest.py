@@ -1,7 +1,14 @@
 import json
 import os
+import sys
 import time
+from pathlib import Path
 from typing import Generator
+
+# Ensure workspace root directory is in sys.path for absolute package imports
+_WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
+if str(_WORKSPACE_ROOT) not in sys.path:
+    sys.path.insert(0, str(_WORKSPACE_ROOT))
 
 import pytest
 from selenium import webdriver
@@ -9,6 +16,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from automation.configuration.config import Config
+
 from automation.api.clients.base_api_client import BaseAPIClient
 from automation.api.clients.auth_client import AuthClient
 from automation.database.db_client import DatabaseClient

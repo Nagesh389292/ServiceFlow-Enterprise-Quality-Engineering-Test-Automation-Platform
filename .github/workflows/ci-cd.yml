@@ -7,6 +7,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+env:
+  PYTHONPATH: .
+
 jobs:
   quality-gate-and-test-execution:
     name: Build, Lint & Automated Test Suites Execution
@@ -51,13 +54,13 @@ jobs:
 
       - name: Launch Application Backend & Frontend Services
         run: |
-          uvicorn application.backend.app.main:app --host 0.0.0.0 --port 8000 &
-          cd application/frontend && python -m http.server 3000 &
+          PYTHONPATH=application/backend DATABASE_URL="postgresql+asyncpg://eqe_user:eqe_password@localhost:5432/eqe_platform" uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          python -m http.server 3000 --directory application/frontend &
           sleep 5
 
       - name: Execute API Test Suite (PyTest API)
         run: |
-          pytest automation/api/tests/ -m "smoke or functional or regression" --env=ci --html=reports/api_report.html --self-contained-html
+          pytest automation/api/tests/ -m "smoke or functional or regression" --env=ci --html=reports/api_report.html --self-contained-html --json-report --json-report-file=reports/json/results.json
 
       - name: Execute UI Test Suite (Selenium Headless Chrome)
         run: |
@@ -66,6 +69,15 @@ jobs:
       - name: Execute Database Integrity Test Suite
         run: |
           pytest automation/database/ -m "database" --env=ci
+
+      - name: Execute Performance & SLA Test Suite
+        run: |
+          pytest automation/performance/ -m "performance" --env=ci
+
+      - name: Generate Quality Engineering Dashboard
+        if: always()
+        run: |
+          python reports/dashboard/generate_dashboard.py || true
 
       - name: Upload Test Reports & Artifacts
         if: always()
