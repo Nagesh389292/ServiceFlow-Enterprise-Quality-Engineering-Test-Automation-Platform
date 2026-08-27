@@ -46,12 +46,6 @@ jobs:
           pip install -r application/backend/requirements.txt
           pip install -r automation/requirements.txt
 
-      - name: Initialize Database Schema & Seed Data
-        run: |
-          PGPASSWORD=eqe_password psql -h localhost -U eqe_user -d eqe_platform -f application/backend/app/db/init.sql
-        env:
-          PGPASSWORD: eqe_password
-
       - name: Launch Application Backend & Frontend Services
         run: |
           PYTHONPATH=application/backend DATABASE_URL="postgresql+asyncpg://eqe_user:eqe_password@localhost:5432/eqe_platform" uvicorn app.main:app --host 0.0.0.0 --port 8000 &

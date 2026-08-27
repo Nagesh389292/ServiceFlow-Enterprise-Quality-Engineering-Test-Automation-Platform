@@ -22,8 +22,9 @@ router = APIRouter()
 def generate_ticket_number() -> str:
     import random
     from datetime import datetime
-    suffix = random.randint(1000, 9999)
-    return f"TCK-{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:17]}-{suffix}"
+    suffix = random.randint(100, 999)
+    now = datetime.utcnow()
+    return f"TCK-{now.strftime('%y%m%d%H%M%S')}-{suffix}"
 
 
 

@@ -93,7 +93,7 @@ class Ticket(Base):
     __tablename__ = "tickets"
 
     id = Column(Integer, primary_key=True, index=True)
-    ticket_number = Column(String(20), unique=True, index=True, nullable=False)
+    ticket_number = Column(String(50), unique=True, index=True, nullable=False)
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
     status = Column(Enum(TicketStatus), default=TicketStatus.OPEN, nullable=False)
