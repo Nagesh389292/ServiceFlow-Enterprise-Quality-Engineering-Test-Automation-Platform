@@ -126,6 +126,17 @@ async def list_tickets(
     )
 
 
+async def fetch_ticket_response(db: AsyncSession, ticket_id: int) -> Ticket:
+    query = select(Ticket).options(
+        selectinload(Ticket.category),
+        selectinload(Ticket.priority),
+        selectinload(Ticket.creator),
+        selectinload(Ticket.assignee)
+    ).where(Ticket.id == ticket_id)
+    res = await db.execute(query)
+    return res.scalar_one()
+
+
 @router.post("", response_model=TicketResponse, status_code=status.HTTP_201_CREATED)
 async def create_ticket(
     ticket_data: TicketCreate,
@@ -157,8 +168,9 @@ async def create_ticket(
         f"Your ticket {ticket.ticket_number} has been created",
         "ticket", ticket.id
     )
+    await db.commit()
     
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
@@ -212,8 +224,7 @@ async def update_ticket(
     
     ticket.updated_at = datetime.utcnow()
     await db.commit()
-    await db.refresh(ticket)
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.post("/{ticket_id}/assign", response_model=TicketResponse)
@@ -248,8 +259,7 @@ async def assign_ticket(
     )
     
     await db.commit()
-    await db.refresh(ticket)
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.post("/{ticket_id}/status", response_model=TicketResponse)
@@ -280,8 +290,7 @@ async def change_ticket_status(
     
     await create_ticket_history(db, ticket_id, "status", old_status.value, status_data.status.value, current_user.id)
     await db.commit()
-    await db.refresh(ticket)
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.post("/{ticket_id}/priority", response_model=TicketResponse)
@@ -306,8 +315,7 @@ async def change_ticket_priority(
     
     await create_ticket_history(db, ticket_id, "priority_id", str(old_priority), str(priority_data.priority_id), current_user.id)
     await db.commit()
-    await db.refresh(ticket)
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.post("/{ticket_id}/escalate", response_model=TicketResponse)
@@ -343,8 +351,7 @@ async def escalate_ticket(
     )
     
     await db.commit()
-    await db.refresh(ticket)
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.post("/{ticket_id}/close", response_model=TicketResponse)
@@ -378,7 +385,6 @@ async def close_ticket(
         is_internal=False
     )
     db.add(comment)
-    
     await create_notification(
         db, ticket.creator_id, "Ticket Closed",
         f"Your ticket {ticket.ticket_number} has been closed: {close_data.resolution}",
@@ -386,8 +392,7 @@ async def close_ticket(
     )
     
     await db.commit()
-    await db.refresh(ticket)
-    return ticket
+    return await fetch_ticket_response(db, ticket.id)
 
 
 @router.post("/{ticket_id}/comments", response_model=TicketCommentResponse, status_code=status.HTTP_201_CREATED)

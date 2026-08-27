@@ -15,12 +15,14 @@ async def get_db() -> AsyncSession:
 
 
 async def init_db() -> None:
+    import app.models  # noqa: F401
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     async with async_session_maker() as session:
         from app.models import User, Priority, Category, UserRole
         from app.core.security import get_password_hash
+
 
         res = await session.execute(select(User))
         if not res.scalars().first():
