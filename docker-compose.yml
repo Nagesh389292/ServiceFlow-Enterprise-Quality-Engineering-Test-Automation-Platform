@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eqe-postgres
+    environment:
+      POSTGRES_DB: eqe_platform
+      POSTGRES_USER: eqe_user
+      POSTGRES_PASSWORD: eqe_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./application/backend/app/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eqe_user -d eqe_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eqe-network
+
+  backend:
+    build:
+      context: ./application/backend
+      dockerfile: Dockerfile
+    container_name: eqe-backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eqe_user:eqe_password@postgres:5432/eqe_platform
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./application/backend:/app
+    networks:
+      - eqe-network
+
+  frontend:
+    build:
+      context: ./application/frontend
+      dockerfile: Dockerfile
+    container_name: eqe-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./application/frontend:/app
+    networks:
+      - eqe-network
+
+  automation:
+    build:
+      context: ./automation
+      dockerfile: Dockerfile
+    container_name: eqe-automation
+    environment:
+      BASE_URL: http://frontend:3000
+      API_URL: http://backend:8000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: eqe_platform
+      DB_USER: eqe_user
+      DB_PASSWORD: eqe_password
+      ENVIRONMENT: test
+    depends_on:
+      - frontend
+      - backend
+      - postgres
+    volumes:
+      - ./automation:/automation
+      - ./reports:/automation/reports
+      - ./logs:/automation/logs
+    networks:
+      - eqe-network
+    command: ["sleep", "infinity"]
+
+volumes:
+  postgres_data:
+
+networks:
+  eqe-network:
+    driver: bridge

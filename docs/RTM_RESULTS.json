@@ -1,0 +1,23 @@
+{
+  "total": 15,
+  "mapped": 15,
+  "automated": 15,
+  "coverage_pct": 100,
+  "requirements": [
+    {"id": "REQ-AUTH-001", "description": "System shall authenticate users via username/password", "test_ids": ["TC_API_SMOKE_02", "TC_DD_UI_01[valid_employee]", "TC_DD_UI_01[valid_admin]"], "status": "PASS"},
+    {"id": "REQ-AUTH-002", "description": "System shall reject invalid credentials with HTTP 401", "test_ids": ["TC_API_NEG_02", "TC_DD_UI_01[wrong_password]", "TC_DD_UI_01[wrong_username]"], "status": "PASS"},
+    {"id": "REQ-AUTH-003", "description": "System shall reject empty credentials", "test_ids": ["TC_DD_UI_01[empty_username]", "TC_DD_UI_01[empty_password]"], "status": "PASS"},
+    {"id": "REQ-AUTH-004", "description": "Protected endpoints shall return 401 without valid token", "test_ids": ["TC_API_NEG_01"], "status": "PASS"},
+    {"id": "REQ-TICKET-001", "description": "Employee shall be able to create a service request ticket", "test_ids": ["TC_API_FUNC_03", "TC_E2E_01"], "status": "PASS"},
+    {"id": "REQ-TICKET-002", "description": "Ticket creation shall validate required fields", "test_ids": ["TC_UI_FUNC_02", "TC_API_BOUND_01"], "status": "PASS"},
+    {"id": "REQ-TICKET-003", "description": "Ticket API response shall conform to JSON schema contract", "test_ids": ["TC_API_SCHEMA_03", "TC_API_SCHEMA_04"], "status": "PASS"},
+    {"id": "REQ-TICKET-004", "description": "Created ticket shall persist in database with correct FK relationships", "test_ids": ["TC_E2E_01"], "status": "PASS"},
+    {"id": "REQ-TICKET-005", "description": "Ticket status shall propagate across API and database layers", "test_ids": ["TC_E2E_02"], "status": "PASS"},
+    {"id": "REQ-TICKET-006", "description": "Non-existent ticket fetch shall return HTTP 404", "test_ids": ["TC_API_NEG_03"], "status": "PASS"},
+    {"id": "REQ-ROLE-001", "description": "All system roles (admin/agent/employee) shall log in successfully", "test_ids": ["TC_UI_FUNC_01[admin]", "TC_UI_FUNC_01[agent]", "TC_UI_FUNC_01[employee]"], "status": "PASS"},
+    {"id": "REQ-API-001", "description": "API shall return correct Content-Type: application/json headers", "test_ids": ["TC_API_SCHEMA_05"], "status": "PASS"},
+    {"id": "REQ-DB-001", "description": "Database shall be seeded with required categories on startup", "test_ids": ["TC_DB_02"], "status": "PASS"},
+    {"id": "REQ-DB-002", "description": "Database shall be seeded with SLA priorities on startup", "test_ids": ["TC_DB_01"], "status": "PASS"},
+    {"id": "REQ-SYS-001", "description": "System health endpoint shall return HTTP 200", "test_ids": ["TC_API_SMOKE_01", "TC_E2E_03"], "status": "PASS"}
+  ]
+}

@@ -1,0 +1,38 @@
+local:
+  base_url: "http://localhost:3000"
+  api_url: "http://localhost:8000"
+  db_host: "localhost"
+  db_port: 5432
+  db_name: "eqe_platform"
+  db_user: "eqe_user"
+  db_password: "eqe_password"
+  browser: "chrome"
+  headless: false
+  explicit_wait: 10
+  implicit_wait: 0
+
+docker:
+  base_url: "http://frontend:3000"
+  api_url: "http://backend:8000"
+  db_host: "postgres"
+  db_port: 5432
+  db_name: "eqe_platform"
+  db_user: "eqe_user"
+  db_password: "eqe_password"
+  browser: "chrome"
+  headless: true
+  explicit_wait: 15
+  implicit_wait: 0
+
+ci:
+  base_url: "http://localhost:3000"
+  api_url: "http://localhost:8000"
+  db_host: "localhost"
+  db_port: 5432
+  db_name: "eqe_platform"
+  db_user: "eqe_user"
+  db_password: "eqe_password"
+  browser: "chrome"
+  headless: true
+  explicit_wait: 15
+  implicit_wait: 0

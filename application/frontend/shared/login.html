@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Service Portal - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .bg-pattern { background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0); background-size: 20px 20px; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 bg-pattern flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-blue-600 mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Enterprise Service Portal</h1>
+                <p class="text-gray-500 mt-1">Sign in to access your dashboard</p>
+            </div>
+
+            <form id="login-form" class="space-y-5" novalidate>
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1.5">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150"
+                        placeholder="Enter your username"
+                        data-testid="username-input">
+                    <p class="mt-1 text-sm text-red-600 hidden" id="username-error" data-testid="username-error"></p>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" autocomplete="current-password" required
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150 pr-12"
+                            placeholder="Enter your password"
+                            data-testid="password-input">
+                        <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" data-testid="toggle-password">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="eye-open">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <svg class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="eye-closed">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L3 3m15.364 15.364l-3.59-3.59"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="mt-1 text-sm text-red-600 hidden" id="password-error" data-testid="password-error"></p>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" data-testid="remember-checkbox">
+                        <span class="text-sm text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Forgot password?</a>
+                </div>
+
+                <button type="submit" id="login-button" 
+                    class="w-full py-2.5 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-testid="login-button">
+                    <span id="login-button-text">Sign in</span>
+                    <svg id="login-spinner" class="w-5 h-5 mr-2 inline-block animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div id="login-error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm hidden" role="alert" data-testid="login-error"></div>
+
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-500 text-center">Demo credentials:</p>
+                <div class="grid grid-cols-3 gap-2 mt-3">
+                    <button type="button" class="demo-cred px-3 py-2 text-xs bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors" data-user="admin">Admin</button>
+                    <button type="button" class="demo-cred px-3 py-2 text-xs bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors" data-user="agent">Agent</button>
+                    <button type="button" class="demo-cred px-3 py-2 text-xs bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors" data-user="employee">Employee</button>
+                </div>
+                <p class="text-xs text-gray-400 text-center mt-2">Password for all: <code class="bg-gray-100 px-1.5 py-0.5 rounded">Admin@123</code> / <code class="bg-gray-100 px-1.5 py-0.5 rounded">Agent@123</code> / <code class="bg-gray-100 px-1.5 py-0.5 rounded">Employee@123</code></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        
+        const demoCredentials = {
+            admin: { username: 'admin', password: 'Admin@123' },
+            agent: { username: 'agent', password: 'Agent@123' },
+            employee: { username: 'employee', password: 'Employee@123' }
+        };
+
+        document.querySelectorAll('.demo-cred').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const creds = demoCredentials[btn.dataset.user];
+                document.getElementById('username').value = creds.username;
+                document.getElementById('password').value = creds.password;
+            });
+        });
+
+        document.getElementById('toggle-password').addEventListener('click', () => {
+            const input = document.getElementById('password');
+            const eyeOpen = document.getElementById('eye-open');
+            const eyeClosed = document.getElementById('eye-closed');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            }
+        });
+
+        function showError(elementId, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        function hideError(elementId) {
+            const el = document.getElementById(elementId);
+            el.classList.add('hidden');
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('login-button');
+            const text = document.getElementById('login-button-text');
+            const spinner = document.getElementById('login-spinner');
+            btn.disabled = loading;
+            if (loading) {
+                text.textContent = 'Signing in...';
+                spinner.classList.remove('hidden');
+            } else {
+                text.textContent = 'Sign in';
+                spinner.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log("LOGIN_FORM_SUBMIT_FIRED");
+            
+            ['username-error', 'password-error', 'login-error'].forEach(hideError);
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            console.log("CREDENTIALS:", username, password);
+            
+            let hasError = false;
+            if (!username) {
+                showError('username-error', 'Username is required');
+                hasError = true;
+            }
+            if (!password) {
+                showError('password-error', 'Password is required');
+                hasError = true;
+            }
+            if (hasError) {
+                console.log("HAS ERROR, STOPPING SUBMIT");
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                console.log("SENDING FETCH TO API...");
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ username, password }).toString()
+                });
+
+                console.log("FETCH RESPONSE STATUS:", response.status);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Login failed');
+                }
+
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('token_type', data.token_type);
+
+                const payload = JSON.parse(atob(data.access_token.split('.')[1]));
+                const role = (payload.role || '').toLowerCase();
+                console.log("LOGIN SUCCESS, ROLE:", role);
+
+                let redirectUrl = '/employee/dashboard.html';
+                if (role === 'admin') redirectUrl = '/admin/dashboard.html';
+                else if (role === 'agent') redirectUrl = '/support/dashboard.html';
+
+                console.log("REDIRECTING TO:", redirectUrl);
+                window.location.href = redirectUrl;
+            } catch (error) {
+                console.log("LOGIN ERROR CATCH:", error);
+                showError('login-error', error.message);
+                setLoading(false);
+            }
+        });
+
+        // End of login form script
+    </script>
+</body>
+</html>

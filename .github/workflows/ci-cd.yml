@@ -1,0 +1,77 @@
+name: Enterprise Quality Engineering CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  quality-gate-and-test-execution:
+    name: Build, Lint & Automated Test Suites Execution
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: eqe_platform
+          POSTGRES_USER: eqe_user
+          POSTGRES_PASSWORD: eqe_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r application/backend/requirements.txt
+          pip install -r automation/requirements.txt
+
+      - name: Initialize Database Schema & Seed Data
+        run: |
+          PGPASSWORD=eqe_password psql -h localhost -U eqe_user -d eqe_platform -f application/backend/app/db/init.sql
+        env:
+          PGPASSWORD: eqe_password
+
+      - name: Launch Application Backend & Frontend Services
+        run: |
+          uvicorn application.backend.app.main:app --host 0.0.0.0 --port 8000 &
+          cd application/frontend && python -m http.server 3000 &
+          sleep 5
+
+      - name: Execute API Test Suite (PyTest API)
+        run: |
+          pytest automation/api/tests/ -m "smoke or functional or regression" --env=ci --html=reports/api_report.html --self-contained-html
+
+      - name: Execute UI Test Suite (Selenium Headless Chrome)
+        run: |
+          pytest automation/ui/tests/ -m "smoke or sanity or functional or regression" --env=ci --html=reports/ui_report.html --self-contained-html
+
+      - name: Execute Database Integrity Test Suite
+        run: |
+          pytest automation/database/ -m "database" --env=ci
+
+      - name: Upload Test Reports & Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-execution-reports
+          path: |
+            reports/
+            logs/

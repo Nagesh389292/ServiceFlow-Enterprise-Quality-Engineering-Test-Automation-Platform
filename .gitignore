@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# PyTest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+
+# SQLite runtime DB
+*.db
+*.sqlite3
+
+# Log files
+logs/
+!logs/.gitkeep
+
+# Transient Failure Artifacts & Reports
+reports/artifacts/
+reports/screenshots/
+reports/html/
+reports/json/
+logs/screenshots/
+
+# Temporary files
+scratch/

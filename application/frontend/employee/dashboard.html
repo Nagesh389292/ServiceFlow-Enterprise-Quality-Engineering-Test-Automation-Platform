@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal - Enterprise Service Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .bg-pattern { background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.03) 1px, transparent 0); background-size: 24px 24px; }
+        .sidebar-transition { transition: transform 0.2s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 bg-pattern min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 sidebar-transition transform lg:translate-x-0" data-testid="sidebar">
+            <div class="flex flex-col h-full">
+                <div class="p-5 border-b border-gray-200">
+                    <a href="dashboard.html" class="flex items-center gap-3" data-testid="sidebar-logo">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-xl text-gray-900">Service Portal</span>
+                    </a>
+                </div>
+
+                <nav class="flex-1 p-4 space-y-1 overflow-y-auto" data-testid="sidebar-nav">
+                    <a href="dashboard.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium transition-colors" data-testid="nav-dashboard">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="create-request.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium transition-colors" data-testid="nav-create-request">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Create Request</span>
+                    </a>
+                    <a href="my-requests.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium transition-colors" data-testid="nav-my-requests">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        <span>My Requests</span>
+                    </a>
+                </nav>
+
+                <div class="p-4 border-t border-gray-200">
+                    <div class="flex items-center gap-3 px-3 py-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <span id="user-initials" class="text-blue-700 font-semibold text-lg" data-testid="user-initials">JE</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p id="user-name" class="font-medium text-gray-900 truncate" data-testid="user-name">John Employee</p>
+                            <p id="user-role" class="text-xs text-gray-500 capitalize" data-testid="user-role">Employee</p>
+                        </div>
+                    </div>
+                    <button id="logout-btn" class="mt-3 w-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center gap-2" data-testid="logout-btn">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Sign out
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Overlay for mobile -->
+        <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-black/50 hidden lg:hidden" data-testid="sidebar-overlay"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-64 flex flex-col min-w-0" data-testid="main-content">
+            <!-- Top Bar -->
+            <header class="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 py-3 lg:px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100" data-testid="sidebar-toggle">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        </button>
+                        <h1 id="page-title" class="text-xl font-semibold text-gray-900 lg:text-2xl" data-testid="page-title">Dashboard</h1>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="notifications-btn" class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100" data-testid="notifications-btn">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.599 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span id="notification-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-medium rounded-full flex items-center justify-center hidden" data-testid="notification-badge">0</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="flex-1 overflow-y-auto p-4 lg:p-6" id="page-content" data-testid="page-content">
+                <div id="dashboard-content">
+                    <!-- Dashboard content loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/shared/auth.js"></script>
+    <script src="/shared/layout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            initAuth();
+            initLayout();
+            
+            const path = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === path) {
+                    link.classList.add('bg-blue-50', 'text-blue-700');
+                    link.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                }
+            });
+
+            await loadDashboardContent();
+            await loadDashboardData();
+        });
+
+        async function loadDashboardContent() {
+            try {
+                const response = await fetch('dashboard-content.html');
+                const html = await response.text();
+                document.getElementById('dashboard-content').innerHTML = html;
+            } catch (e) {
+                console.error('Failed to load dashboard content:', e);
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                const response = await fetchWithAuth('/api/tickets?page_size=5');
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStats(data.items);
+                    renderRecentTickets(data.items);
+                }
+            } catch (e) {
+                console.error('Failed to load dashboard data:', e);
+            }
+        }
+
+        function updateStats(tickets) {
+            const statTotal = document.getElementById('stat-total');
+            if (statTotal) statTotal.textContent = tickets.length;
+            const statOpen = document.getElementById('stat-open');
+            if (statOpen) statOpen.textContent = tickets.filter(t => t.status === 'open').length;
+            const statInProgress = document.getElementById('stat-in-progress');
+            if (statInProgress) statInProgress.textContent = tickets.filter(t => ['assigned', 'in_progress', 'pending'].includes(t.status)).length;
+            const statResolved = document.getElementById('stat-resolved');
+            if (statResolved) statResolved.textContent = tickets.filter(t => ['resolved', 'closed'].includes(t.status)).length;
+        }
+
+        function renderRecentTickets(tickets) {
+            const tbody = document.getElementById('recent-tickets-body');
+            if (!tickets.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-8 text-center text-gray-500">No requests yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = tickets.map(t => `
+                <tr class="hover:bg-gray-50" data-testid="ticket-row-${t.id}">
+                    <td class="px-5 py-4 font-mono text-sm font-medium text-gray-900">${t.ticket_number}</td>
+                    <td class="px-5 py-4">
+                        <a href="view-request.html?id=${t.id}" class="text-blue-600 hover:text-blue-700 font-medium">${t.title}</a>
+                    </td>
+                    <td class="px-5 py-4 text-sm text-gray-600">${t.category?.name || 'N/A'}</td>
+                    <td class="px-5 py-4">${getPriorityBadge(t.priority?.name || 'P3')}</td>
+                    <td class="px-5 py-4">${getStatusBadge(t.status)}</td>
+                    <td class="px-5 py-4 text-sm text-gray-500">${formatDate(t.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

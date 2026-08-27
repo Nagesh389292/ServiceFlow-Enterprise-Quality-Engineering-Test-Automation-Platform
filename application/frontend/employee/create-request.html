@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Request - Enterprise Service Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .bg-pattern { background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.03) 1px, transparent 0); background-size: 24px 24px; }
+        .sidebar-transition { transition: transform 0.2s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 bg-pattern min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 sidebar-transition transform lg:translate-x-0" data-testid="sidebar">
+            <div class="flex flex-col h-full">
+                <div class="p-5 border-b border-gray-200">
+                    <a href="dashboard.html" class="flex items-center gap-3" data-testid="sidebar-logo">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-xl text-gray-900">Service Portal</span>
+                    </a>
+                </div>
+
+                <nav class="flex-1 p-4 space-y-1 overflow-y-auto" data-testid="sidebar-nav">
+                    <a href="dashboard.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium transition-colors" data-testid="nav-dashboard">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="create-request.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-700 font-medium" data-testid="nav-create-request">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Create Request</span>
+                    </a>
+                    <a href="my-requests.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium transition-colors" data-testid="nav-my-requests">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        <span>My Requests</span>
+                    </a>
+                </nav>
+
+                <div class="p-4 border-t border-gray-200">
+                    <div class="flex items-center gap-3 px-3 py-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <span id="user-initials" class="text-blue-700 font-semibold text-lg" data-testid="user-initials">JE</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p id="user-name" class="font-medium text-gray-900 truncate" data-testid="user-name">John Employee</p>
+                            <p id="user-role" class="text-xs text-gray-500 capitalize" data-testid="user-role">Employee</p>
+                        </div>
+                    </div>
+                    <button id="logout-btn" class="mt-3 w-full px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center gap-2" data-testid="logout-btn">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Sign out
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-black/50 hidden lg:hidden" data-testid="sidebar-overlay"></div>
+
+        <main class="flex-1 lg:ml-64 flex flex-col min-w-0" data-testid="main-content">
+            <header class="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 py-3 lg:px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100" data-testid="sidebar-toggle">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        </button>
+                        <h1 id="page-title" class="text-xl font-semibold text-gray-900 lg:text-2xl" data-testid="page-title">Create Request</h1>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="notifications-btn" class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100" data-testid="notifications-btn">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.599 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span id="notification-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-medium rounded-full flex items-center justify-center hidden" data-testid="notification-badge">0</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 lg:p-6" id="page-content" data-testid="page-content">
+                <div class="max-w-2xl mx-auto">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-bold text-gray-900">Create Service Request</h2>
+                            <p class="text-gray-500 mt-1">Fill in the details below to submit a new service request</p>
+                        </div>
+
+                        <form id="create-request-form" class="space-y-5" novalidate>
+                            <div>
+                                <label for="category" class="block text-sm font-medium text-gray-700 mb-1.5">Category <span class="text-red-500">*</span></label>
+                                <select id="category" name="category_id" required
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150"
+                                    data-testid="category-select">
+                                    <option value="">Select a category</option>
+                                </select>
+                                <p class="mt-1 text-sm text-red-600 hidden" id="category-error" data-testid="category-error"></p>
+                            </div>
+
+                            <div>
+                                <label for="priority" class="block text-sm font-medium text-gray-700 mb-1.5">Priority <span class="text-red-500">*</span></label>
+                                <select id="priority" name="priority_id" required
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150"
+                                    data-testid="priority-select">
+                                    <option value="">Select a priority</option>
+                                </select>
+                                <p class="mt-1 text-sm text-red-600 hidden" id="priority-error" data-testid="priority-error"></p>
+                            </div>
+
+                            <div>
+                                <label for="title" class="block text-sm font-medium text-gray-700 mb-1.5">Subject <span class="text-red-500">*</span></label>
+                                <input type="text" id="title" name="title" required maxlength="255"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150"
+                                    placeholder="Brief summary of the issue"
+                                    data-testid="title-input">
+                                <p class="mt-1 text-sm text-red-600 hidden" id="title-error" data-testid="title-error"></p>
+                            </div>
+
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700 mb-1.5">Description <span class="text-red-500">*</span></label>
+                                <textarea id="description" name="description" required rows="6"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-150 resize-none"
+                                    placeholder="Describe the issue in detail..."
+                                    data-testid="description-input"></textarea>
+                                <p class="mt-1 text-sm text-red-600 hidden" id="description-error" data-testid="description-error"></p>
+                            </div>
+
+                            <div id="form-error" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm hidden" role="alert" data-testid="form-error"></div>
+
+                            <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+                                <button type="submit" id="submit-btn"
+                                    class="flex-1 sm:flex-none px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    data-testid="submit-btn">
+                                    <span id="submit-btn-text">Submit Request</span>
+                                    <svg id="submit-spinner" class="w-5 h-5 mr-2 inline-block animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </button>
+                                <a href="dashboard.html" class="flex-1 sm:flex-none px-6 py-2.5 text-center text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors" data-testid="cancel-btn">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/shared/auth.js"></script>
+    <script src="/shared/layout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+            initLayout();
+            loadDropdowns();
+            const path = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === path) {
+                    link.classList.add('bg-blue-50', 'text-blue-700');
+                    link.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                }
+            });
+
+            setupForm();
+            loadDropdowns();
+        });
+
+        async function loadDropdowns() {
+            try {
+                const [catRes, priRes] = await Promise.all([
+                    fetchWithAuth('/api/categories?active_only=true'),
+                    fetchWithAuth('/api/priorities?active_only=true')
+                ]);
+
+                if (catRes.ok) {
+                    const data = await catRes.json();
+                    const select = document.getElementById('category');
+                    data.items.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = c.name;
+                        select.appendChild(opt);
+                    });
+                }
+
+                if (priRes.ok) {
+                    const data = await priRes.json();
+                    const select = document.getElementById('priority');
+                    data.items.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.id;
+                        opt.textContent = `${p.display_name} (${p.name})`;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to load dropdowns:', e);
+            }
+        }
+
+        function setupForm() {
+            const form = document.getElementById('create-request-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                clearErrors();
+
+                const formData = {
+                    category_id: parseInt(document.getElementById('category').value),
+                    priority_id: parseInt(document.getElementById('priority').value),
+                    title: document.getElementById('title').value.trim(),
+                    description: document.getElementById('description').value.trim()
+                };
+
+                let hasError = false;
+                if (!formData.category_id) { showError('category-error', 'Category is required'); hasError = true; }
+                if (!formData.priority_id) { showError('priority-error', 'Priority is required'); hasError = true; }
+                if (!formData.title) { showError('title-error', 'Subject is required'); hasError = true; }
+                if (!formData.description) { showError('description-error', 'Description is required'); hasError = true; }
+                if (hasError) return;
+
+                setLoading(true);
+
+                try {
+                    const response = await fetchWithAuth('/api/tickets', {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.detail || 'Failed to create request');
+                    }
+
+                    showToast('Request created successfully!', 'success');
+                    setTimeout(() => window.location.href = `view-request.html?id=${data.id}`, 1500);
+                } catch (error) {
+                    showFormError(error.message);
+                    setLoading(false);
+                }
+            });
+        }
+
+        function showError(id, message) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        function clearErrors() {
+            ['category-error', 'priority-error', 'title-error', 'description-error', 'form-error'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('hidden');
+            });
+        }
+
+        function showFormError(message) {
+            const el = document.getElementById('form-error');
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('submit-btn');
+            const text = document.getElementById('submit-btn-text');
+            const spinner = document.getElementById('submit-spinner');
+            btn.disabled = loading;
+            if (loading) {
+                text.textContent = 'Submitting...';
+                spinner.classList.remove('hidden');
+            } else {
+                text.textContent = 'Submit Request';
+                spinner.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
