@@ -17,20 +17,20 @@ Built specifically to demonstrate **Quality Engineering excellence** for high-re
 
 ```mermaid
 graph TD
-    SubGraph1["Client & Automation Layer"]
+    subgraph SG1 ["Client & Automation Layer"]
         UI["Vanilla JS + CSS Frontend (Port 3000)"]
         Selenium["Selenium WebDriver POM Suite"]
         Requests["REST API Test Suite (requests)"]
         Perf["API Performance & SLA Benchmarks"]
     end
 
-    SubGraph2["Application Core Layer"]
+    subgraph SG2 ["Application Core Layer"]
         FastAPI["FastAPI REST Services (Port 8000)"]
         JWT["OAuth2 + JWT Auth Engine"]
         SLAEngine["SLA Monitoring & Escalation Service"]
     end
 
-    SubGraph3["Persistence & Analytics Layer"]
+    subgraph SG3 ["Persistence & Analytics Layer"]
         DB[("SQLite / PostgreSQL Database")]
         Dashboard["Dark-Mode Quality Dashboard (HTML5)"]
         JSONLog["ELK-Ready JSON Audit Logs"]
